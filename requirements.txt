@@ -1,0 +1,7 @@
+discord.py
+selenium
+webdriver-manager
+d20
+psycopg
+click
+pytest
