@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from d20.dice import RollResult
 
 class ActionRollResult:
     HOPE = "Hope"
@@ -9,11 +10,11 @@ class ActionRollResult:
 class ActionRoll:
     hope: int
     fear: int
-    mod: int
+    mod: RollResult
     
     @property
     def total(self):
-        return self.hope+self.fear
+        return self.hope+self.fear+self.mod.total
     
     @property
     def result(self):

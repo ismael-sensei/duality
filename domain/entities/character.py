@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Character:
-    user_id: str
+    character_id: str
     name: str
     community: str
     ancestry: str
@@ -24,3 +24,6 @@ class Character:
     hp_slots: int
     stress_slots: int
     hope_slots: int
+    thumbnail: str
+    user_id: int
+    game_id: int
