@@ -2,7 +2,7 @@ discord.py
 selenium
 webdriver-manager
 d20
-psycopg
+psycopg2
 click
 pytest
 sqlalchemy
