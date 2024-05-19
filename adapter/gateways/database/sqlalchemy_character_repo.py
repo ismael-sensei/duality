@@ -43,7 +43,7 @@ class SQLAlchemyCharacterRepository(CharacterRepository):
         return None
     
 
-    def del_character(self, user_id: str, game_id: str)
+    def del_character(self, user_id: str, game_id: str):
         self.session.query(CharacterModel).filter_by(user_id = user_id, game_id = game_id).delete()
         self.session.commit()
 
