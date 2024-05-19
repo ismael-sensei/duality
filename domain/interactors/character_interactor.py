@@ -57,26 +57,26 @@ class CharacterInteractor():
 
         return ActionRoll(hope = d20.roll("1d12").total, fear = d20.roll("1d12").total, mod = d20.roll(mod))
     
-    def import_sheet(self, sheet_id: str) -> Character:
-        character = self.__fetch_data(sheet_id)
+    def import_sheet(self, sheet_url: str) -> Character:
+        character = self.__fetch_data(sheet_url)
         self.character = character
 
         self.repo.add_character(character)
         return character
 
-    def __fetch_data(self, sheet_id: str):
-        url = f'https://app.demiplane.com/nexus/daggerheart/character-sheet/{sheet_id}'
+    def __fetch_data(self, sheet_url: str):
         try:
             options = webdriver.ChromeOptions()
             options.add_argument('--headless')
             options.add_argument('--no-sandbox')
             options.add_argument('--disable-dev-shm-usage')
-            #options.add_argument('--disable-gpu')
-            #options.add_argument('--remote-debugging-port=9222')
+            options.add_argument('--disable-gpu')
+            options.add_argument('--remote-debugging-port=9222')
             options.binary_location = os.getenv('GOOGLE_CHROME_BIN')
 
-            driver = webdriver.Chrome(service=ChromeService(executable_path=os.getenv('CHROMEDRIVER_PATH')), options=options)
-            driver.get(url)
+            service=ChromeService(executable_path=os.getenv('CHROMEDRIVER_PATH'))
+            driver = webdriver.Chrome(service=service, options=options)
+            driver.get(sheet_url)
 
             # Esperar hasta que el div con class level-value sea visible
             WebDriverWait(driver, 60).until(
@@ -84,19 +84,19 @@ class CharacterInteractor():
             )
 
             character = Character(
-                character_id = sheet_id,
+                character_id = sheet_url.split('/')[-1],
                 name = driver.find_element(By.CLASS_NAME, 'css-1dyfylb').text.strip(),
                 community = driver.find_element(By.CLASS_NAME, 'header-name-subtitle-community').text.strip(),
                 ancestry = driver.find_element(By.CLASS_NAME, 'header-name-subtitle-ancestry').text.strip(),
                 class_ = driver.find_element(By.CLASS_NAME, 'header-name-subtitle-class').text.strip(),
                 subclass = driver.find_element(By.CLASS_NAME, 'header-name-subtitle-subclass').text.strip(),
                 level = int(driver.find_element(By.CLASS_NAME, 'level-value').text.strip()),
-                agility = int(driver.find_elements(By.CLASS_NAME, 'trait-value')[0].text.strip()),
-                strength = int(driver.find_elements(By.CLASS_NAME, 'trait-value')[1].text.strip()),
-                finesse = int(driver.find_elements(By.CLASS_NAME, 'trait-value')[2].text.strip()),
-                instinct = int(driver.find_elements(By.CLASS_NAME, 'trait-value')[3].text.strip()),
-                presence = int(driver.find_elements(By.CLASS_NAME, 'trait-value')[4].text.strip()),
-                knowledge = int(driver.find_elements(By.CLASS_NAME, 'trait-value')[5].text.strip()),
+                agility = int(driver.find_elements(By.CSS_SELECTOR, 'div.trait-value.css-0')[0].text.strip()),
+                strength = int(driver.find_elements(By.CSS_SELECTOR, 'div.trait-value.css-0')[1].text.strip()),
+                finesse = int(driver.find_elements(By.CSS_SELECTOR, 'div.trait-value.css-0')[2].text.strip()),
+                instinct = int(driver.find_elements(By.CSS_SELECTOR, 'div.trait-value.css-0')[3].text.strip()),
+                presence = int(driver.find_elements(By.CSS_SELECTOR, 'div.trait-value.css-0')[4].text.strip()),
+                knowledge = int(driver.find_elements(By.CSS_SELECTOR, 'div.trait-value.css-0')[5].text.strip()),
                 evasion = int(driver.find_element(By.CLASS_NAME, 'evasion-value').text.strip()),
                 armor = int(driver.find_element(By.CLASS_NAME, 'armor-value').text.strip()),
                 minor_th = int(driver.find_elements(By.CLASS_NAME, 'threshold-value-text')[0].text.strip()),
@@ -112,7 +112,10 @@ class CharacterInteractor():
             )
 
             driver.quit()
+            service.stop()
+
             return character
         except Exception as e:
             print(f'Error al parsear la hoja de personaje: {e}')
             return None
+        
