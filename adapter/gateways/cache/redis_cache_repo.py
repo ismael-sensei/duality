@@ -6,7 +6,7 @@ from dataclasses import asdict
 from domain.interfaces import CacheRepository
 
 pool = redis.ConnectionPool.from_url(
-    url = config.REDIS_URI,
+    url=config.REDIS_URI,
     max_connections=10,
     socket_connect_timeout=5,  # Tiempo en segundos para intentar conectar antes de fallar
     socket_timeout=5,          # Tiempo en segundos para operaciones de lectura/escritura antes de fallar

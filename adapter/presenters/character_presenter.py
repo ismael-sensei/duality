@@ -14,47 +14,33 @@ class CharacterPresenter():
                 title=f"{character.name}",
                 description=f"""{character.community} {character.ancestry} {character.class_} {character.subclass} **Level {character.level}**"""
             )
-            embed.add_field(
-                name='Stats', 
-                value=f"""
-                    **Agility**: {character.agility}{"\u3000" * 3}**Strength**: {character.strength}{"\u3000" * 3}**Finesse**: {character.finesse}
-                    **Instinct**: {character.instinct}{"\u3000" * 3}**Presence**: {character.presence}{"\u3000" * 3}**Knowledge**: {character.knowledge}
-                """,
-                inline=False
+            embed.set_author(
+                name = 'Demiplane Sheet', 
+                url= f'https://app.demiplane.com/nexus/daggerheart/character-sheet/{character.character_id}', 
+                icon_url='https://yt3.googleusercontent.com/ytc/AIdro_kwVr8UI750Rhk1QRjBGtGvIHewJS1YZVhDGXUXk6j23w=s900-c-k-c0x00ffffff-no-rj'
             )
 
-            embed.add_field(
-                name = f"**Hope** (2/{character.hope_slots})",
-                value="⚪️⚪️⚫️⚫️⚫️",
-                inline=False
-            )
-
-            embed.add_field(
-                name="Defense", 
-                value=f"""
-                    **Evasion**: {character.evasion}
-                    **Armor**: {character.armor}
-                    **Armor Slots** (1/{character.armor_slots}): ⚪️⚫️⚫️⚫️⚫️⚫️
-                """,
-                inline=False
-            )
-
-            embed.add_field(
-                name="Damage", 
-                value=f"""
-                    **Thresholds**: **{character.minor_th}** >= minor > **{character.major_th}** >= major > **{character.severe_th}** >= severe
-                    **HP** (1/{character.hp_slots}): ⚪️⚫️⚫️⚫️⚫️⚫️
-                    **Stress** (1/{character.stress_slots}): ⚪️⚫️⚫️⚫️⚫️⚫️
-                """,
-                inline=False
-            )
-
-            embed.add_field(
-                name="Character Sheet",
-                value=f"https://app.demiplane.com/nexus/daggerheart/character-sheet/{character.character_id}",
-                inline=False
-            )
             embed.set_thumbnail(url=character.thumbnail)
+
+            embed.add_field(name='Agility', value= f'{character.agility:+}')
+            embed.add_field(name='Strength', value= f'{character.strength:+}')
+            embed.add_field(name='Finesse', value= f'{character.finesse:+}')
+            embed.add_field(name='Instinct', value= f'{character.instinct:+}')
+            embed.add_field(name='Presence', value= f'{character.presence:+}')
+            embed.add_field(name='Knowledge', value= f'{character.knowledge:+}')
+
+
+            embed.add_field(name='Evasion', value= f'{character.evasion}')
+            embed.add_field(name='Armor', value= f'{character.armor}')
+            embed.add_field(name=f'Armor Slots (1/{character.armor_slots})', value= '⚪️⚫️⚫️⚫️⚫️⚫️')
+
+
+            embed.add_field(name=f'HP (1/{character.hp_slots})', value = '⚪️⚫️⚫️⚫️⚫️⚫️')
+            embed.add_field(name=f'Stress (1/{character.stress_slots}', value = '⚪️⚫️⚫️⚫️⚫️⚫️')
+            embed.add_field(name = f"**Hope** (2/{character.hope_slots})", value="⚪️⚪️⚫️⚫️⚫️")
+
+            embed.add_field(name='Thresholds', value=f'{character.minor_th} >= *minor* > {character.major_th} >= *major* > {character.severe_th} >= *severe*')
+
 
             await self.ctx.send(embed=embed)
         else:
