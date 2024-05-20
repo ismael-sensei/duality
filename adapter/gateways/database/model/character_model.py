@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, BigInteger
 from .base_model import BaseModel
 
 class CharacterModel(BaseModel):
-    __tablename__ = 'characters'
+    __tablename__ = 'charactersv1'
 
     character_id = Column(String)
     name = Column(String)
@@ -23,9 +23,13 @@ class CharacterModel(BaseModel):
     major_th = Column(Integer)
     severe_th = Column(Integer)
     armor_slots = Column(Integer)
-    hp_slots = Column(Integer)
-    stress_slots = Column(Integer)
-    hope_slots = Column(Integer)
+    armor_slots_max = Column(Integer)
+    hp = Column(Integer)
+    hp_max = Column(Integer)
+    stress = Column(Integer)
+    stress_max = Column(Integer)
+    hope = Column(Integer)
+    hope_max = Column(Integer)
     thumbnail = Column(String)
     user_id = Column(BigInteger, primary_key=True)
     game_id = Column(BigInteger, primary_key=True)

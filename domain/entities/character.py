@@ -21,9 +21,13 @@ class Character:
     major_th: int
     severe_th: int
     armor_slots: int
-    hp_slots: int
-    stress_slots: int
-    hope_slots: int
+    armor_slots_max: int
+    hp: int
+    hp_max: int
+    stress: int
+    stress_max: int
+    hope: int
+    hope_max: int
     thumbnail: str
     user_id: int
     game_id: int
