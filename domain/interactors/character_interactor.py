@@ -21,41 +21,29 @@ class CharacterInteractor():
         self.game_id = game_id
         self.character = repo.get_character(user_id, game_id)
 
-    def agility(self, mod: str = 0):
+    def action_roll(self, attribute: str, mod: str = 0):
         if self.character is not None:
-            mod = f"{mod}+{self.character.agility}"
+            mod = f"{mod}+{getattr(self.character, attribute)}"
 
         return ActionRoll(hope = d20.roll("1d12").total, fear = d20.roll("1d12").total, mod = d20.roll(mod))
+
+    def agility(self, mod: str = 0):
+        return self.action_roll("agility", mod)
     
     def strength(self, mod: str = 0):
-        if self.character is not None:
-            mod = f"{mod}+{self.character.agility}"
-
-        return ActionRoll(hope = d20.roll("1d12").total, fear = d20.roll("1d12").total, mod = d20.roll(mod))
+        return self.action_roll("strength", mod)
     
     def finesse(self, mod: str = 0):
-        if self.character is not None:
-            mod = f"{mod}+{self.character.agility}"
-
-        return ActionRoll(hope = d20.roll("1d12").total, fear = d20.roll("1d12").total, mod = d20.roll(mod))
+        return self.action_roll("finesse", mod)
     
     def instinct(self, mod: str = 0):
-        if self.character is not None:
-            mod = f"{mod}+{self.character.agility}"
-
-        return ActionRoll(hope = d20.roll("1d12").total, fear = d20.roll("1d12").total, mod = d20.roll(mod))
+        return self.action_roll("instinct", mod)
     
     def presence(self, mod: str = 0):
-        if self.character is not None:
-            mod = f"{mod}+{self.character.agility}"
-
-        return ActionRoll(hope = d20.roll("1d12").total, fear = d20.roll("1d12").total, mod = d20.roll(mod))
+        return self.action_roll("presence", mod)
     
     def knowledge(self, mod: str = 0):
-        if self.character is not None:
-            mod = f"{mod}+{self.character.agility}"
-
-        return ActionRoll(hope = d20.roll("1d12").total, fear = d20.roll("1d12").total, mod = d20.roll(mod))
+        return self.action_roll("knowledge", mod)
     
     def import_sheet(self, sheet_url: str) -> Character:
         character = self.__fetch_data(sheet_url)
@@ -102,10 +90,14 @@ class CharacterInteractor():
                 minor_th = int(driver.find_elements(By.CLASS_NAME, 'threshold-value-text')[0].text.strip()),
                 major_th = int(driver.find_elements(By.CLASS_NAME, 'threshold-value-text')[1].text.strip()),
                 severe_th = int(driver.find_elements(By.CLASS_NAME, 'threshold-value-text')[2].text.strip()),
-                armor_slots = int(driver.find_elements(By.CLASS_NAME, 'tracker-max')[1].text.strip()),
-                hp_slots = int(driver.find_elements(By.CLASS_NAME, 'tracker-max')[1].text.strip()),
-                stress_slots = int(driver.find_elements(By.CLASS_NAME, 'tracker-max')[1].text.strip()),
-                hope_slots = int(driver.find_elements(By.CLASS_NAME, 'tracker-max')[1].text.strip()),
+                armor_slots = 0,
+                armor_slots_max = int(driver.find_elements(By.CLASS_NAME, 'tracker-max')[1].text.strip()),
+                hp = 0,
+                hp_max = int(driver.find_elements(By.CLASS_NAME, 'tracker-max')[1].text.strip()),
+                stress = 0,
+                stress_max = int(driver.find_elements(By.CLASS_NAME, 'tracker-max')[1].text.strip()),
+                hope = 0,
+                hope_max = int(driver.find_elements(By.CLASS_NAME, 'tracker-max')[1].text.strip()),
                 thumbnail = driver.find_element(By.CLASS_NAME, 'avatar__image').get_attribute('src'),
                 user_id = self.user_id,
                 game_id = self.game_id
@@ -119,3 +111,47 @@ class CharacterInteractor():
             print(f'Error al parsear la hoja de personaje: {e}')
             return None
         
+    def update_attribute(self, attribute: str, mod: str):
+        if self.character is not None:
+            mod_value = d20.roll(mod).total
+            current_value = getattr(self.character, attribute, 0)
+            new_value = min(getattr(self.character, f'{attribute}_max'), max(0, current_value + mod_value))
+            setattr(self.character, attribute, new_value)
+
+            self.repo.add_character(self.character)
+            return self.character
+        return None
+    
+    def update_hope(self, mod: str):
+        self.update_attribute("hope", mod)
+
+    def update_hp(self, mod: str):
+        self.update_attribute("hp", mod)
+
+    def update_armor_slots(self, mod: str):
+        self.update_attribute("armor_slots", mod)
+
+    def update_stress(self, mod: str):
+        self.update_attribute("stress", mod)
+
+    def set_attribute(self, attribute: str, mod: str):
+        if self.character is not None:
+            mod_value = d20.roll(mod).total
+            new_value = min(getattr(self.character, f'{attribute}_max'), max(0, mod_value))
+            setattr(self.character, attribute, new_value)
+
+            self.repo.add_character(self.character)
+            return self.character
+        return None
+
+    def set_hope(self, mod: str):
+        self.set_attribute("hope", mod)
+
+    def set_hp(self, mod: str):
+        self.set_attribute("hp", mod)
+
+    def set_armor_slots(self, mod: str):
+        self.set_attribute("armor_slots", mod)
+
+    def set_stress(self, mod: str):
+        self.set_attribute("stress", mod)
