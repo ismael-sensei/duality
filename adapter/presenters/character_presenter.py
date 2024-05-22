@@ -57,3 +57,33 @@ class CharacterPresenter():
             await self.ctx.send(embed=embed)
         else:
             await self.ctx.send("Character not found")
+
+    async def status(self, character: Character):
+        if character:
+            embed = Embed(
+                title=f"{character.name}",
+                description=f"""{character.community} {character.ancestry} {character.class_} {character.subclass} **Level {character.level}**"""
+            )
+            embed.set_thumbnail(url=character.thumbnail)
+
+            embed.add_field(
+                name=f'HP ({character.hp}/{character.hp_max})', 
+                value= ''.join(['⚪️' for slot in range(character.hp)]) + ''.join(['⚫️' for slot in range(character.hp_max - character.hp)])
+            )
+            embed.add_field(
+                name=f'Stress ({character.stress}/{character.stress_max})', 
+                value= ''.join(['⚪️' for slot in range(character.stress)]) + ''.join(['⚫️' for slot in range(character.stress_max - character.stress)])
+            )
+            embed.add_field(
+                name=f'Armor Slots ({character.armor_slots}/{character.armor_slots_max})', 
+                value= ''.join(['⚪️' for slot in range(character.armor_slots)]) + ''.join(['⚫️' for slot in range(character.armor_slots_max - character.armor_slots)])
+            )
+            embed.add_field(
+                name=f'Hope ({character.hope}/{character.hope_max})', 
+                value= ''.join(['⚪️' for slot in range(character.hope)]) + ''.join(['⚫️' for slot in range(character.hope_max - character.hope)])
+            )
+
+
+            await self.ctx.send(embed=embed)
+        else:
+            await self.ctx.send("Character not found")

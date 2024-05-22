@@ -23,6 +23,7 @@ class CachedCharacterRepository(CharacterRepository):
         else:
             character = self.character_repo.get_character(user_id, game_id)
             if character:
-                self.cache_repo.set(f"{character.id}-{character.game_id}", character)
+                self.cache_repo.set(f"{character.user_id}-{character.game_id}", character)
             return character
+
 

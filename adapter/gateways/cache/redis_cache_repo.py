@@ -40,3 +40,6 @@ class RedisCacheRepository(CacheRepository):
 
     def set(self, key: str, value):
         self.client.set(key, RedisAdapter.to_json(value))
+
+    def delete(self, key: str):
+        self.client.delete(key)

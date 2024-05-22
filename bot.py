@@ -33,5 +33,6 @@ def run():
     bot.run(config.DISCORD_TOKEN)
 
 if __name__ == '__main__':
+    from domain.entities import Tracker
     run()
     
